@@ -14,9 +14,6 @@
 
     <div id="header">
       <div class="leftside">
-        <el-button @click="drawer = true" class="btnsidebar">
-          <i class="el-icon-fa-bars btn-icon"></i>
-        </el-button>
         <div id="disappear" class="imageHeight" title="Luyện Code Online">
           <a href="/">
             <img src="/static/img/logoHeader.png" class="imageHeight" alt="NCC LMS"
@@ -81,7 +78,7 @@ export default {
 };
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .imageHeight {
   height: 30px;
 }
@@ -94,9 +91,7 @@ export default {
   align-items: center;
 }
 
-.btnsidebar {
-  display: none;
-}
+
 
 a {
   background-color: transparent;
@@ -185,22 +180,6 @@ img {
 
   .sidedrawer {
     display: flex;
-  }
-
-  .btnsidebar {
-    display: flex;
-    border: none;
-    background: none;
-  }
-
-  .btnsidebar .btn-icon {
-    padding: 6px 0;
-  }
-
-  #header {
-    padding-left: 0;
-    padding-right: 20px;
-    justify-content: space-between;
   }
 
   .content-app {
