@@ -42,11 +42,7 @@
         </Card>
       </Col>
       <!-- Question item -->
-      <Col v-if="questionStt || endCount" :span="24" class="col-items">
-        <div class="col-score">
-          <h2>Your score: 0</h2>
-        </div>
-      </Col>
+    
       <Col
         :span="24"
         v-if="!endCount && questionStt && questionItem"
@@ -68,9 +64,13 @@
                       v-html="questionItem.question"
                     ></h3>
                     <div class="typeContainer">
-                      <VueEditor
+                      <!-- <VueEditor
                         v-if="questionItem.questionType == 'OE'"
                         v-model="typeText[questionItem.id]"
+                      /> -->
+                      <QuestionOE v-if="questionItem.questionType == 'OE'"
+                     :questionItem="typeText[questionItem.id]"
+                      @update:questionItem="updateQuestionItem"
                       />
                       <RadioGroup
                         class="space"
@@ -214,10 +214,11 @@
 <script>
 import api from "../../api";
 import { VueEditor } from "vue2-editor";
-
+import QuestionOE from "./QuestionOE.vue";
 export default {
   components: {
-    VueEditor
+    VueEditor,
+    QuestionOE
   },
   name: "QuestionList",
   data() {
@@ -499,7 +500,8 @@ export default {
         isSaved: (this.isSaved[this.questionItem.id] = true)
       });
       const postData = this.data.find(data => data.questionId === questionId);
-      if (JSON.stringify(prevData) !== JSON.stringify(postData)) {
+      console.log(prevData, postData, questionType)
+      if (JSON.stringify(prevData) !== JSON.stringify(postData) || questionType === 'OE') {
         api.postSaveOneAnswer(postData).then(res => {
           console.log("Data push to DB---", res.data);
         });
@@ -594,6 +596,10 @@ export default {
           this.countTime.minutes
         )}:${pad(this.countTime.seconds)}`;
       }, 1000);
+    },
+    updateQuestionItem(updatedItem) {
+      console.log(updatedItem)
+      this.typeText[this.questionItem.id] = updatedItem;
     }
   },
   beforeDestroy() {

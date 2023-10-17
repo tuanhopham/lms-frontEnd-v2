@@ -3,9 +3,9 @@
     <Row type="flex" justify="space-between" class="header">
       <Col :span=12>
       <div>
-        <span>{{$t('m.Language')}}:</span>
+        <span>{{ $t('m.Language') }}:</span>
         <Select :value="language" @on-change="onLangChange" class="adjust">
-          <Option v-for="item in languages" :key="item" :value="item">{{item}}
+          <Option v-for="item in languages" :key="item" :value="item">{{ item }}
           </Option>
         </Select>
 
@@ -23,9 +23,9 @@
       </Col>
       <Col :span=12>
       <div class="fl-right">
-        <span>{{$t('m.Theme')}}:</span>
+        <span>{{ $t('m.Theme') }}:</span>
         <Select :value="theme" @on-change="onThemeChange" class="adjust">
-          <Option v-for="item in themes" :key="item.label" :value="item.value">{{item.label}}
+          <Option v-for="item in themes" :key="item.label" :value="item.value">{{ item.label }}
           </Option>
         </Select>
       </div>
@@ -36,163 +36,167 @@
   </div>
 </template>
 <script>
-  import utils from '@/utils/utils'
-  import { codemirror } from 'vue-codemirror-lite'
+/* eslint-disable */
+import utils from '@/utils/utils'
+import { codemirror } from 'vue-codemirror-lite'
 
-  // theme
-  import 'codemirror/theme/monokai.css'
-  import 'codemirror/theme/solarized.css'
-  import 'codemirror/theme/material.css'
+// theme
+import 'codemirror/theme/monokai.css'
+import 'codemirror/theme/solarized.css'
+import 'codemirror/theme/material.css'
 
-  // mode
-  import 'codemirror/mode/clike/clike.js'
-  import 'codemirror/mode/javascript/javascript.js'
-  import 'codemirror/mode/php/php.js'
-  import 'codemirror/mode/python/python.js'
-  import 'codemirror/mode/go/go.js'
+// mode
+import 'codemirror/mode/clike/clike.js'
+import 'codemirror/mode/javascript/javascript.js'
+import 'codemirror/mode/php/php.js'
+import 'codemirror/mode/python/python.js'
+import 'codemirror/mode/go/go.js'
 
-  // active-line.js
-  import 'codemirror/addon/selection/active-line.js'
+// active-line.js
+import 'codemirror/addon/selection/active-line.js'
 
-  // foldGutter
-  import 'codemirror/addon/fold/foldgutter.css'
-  import 'codemirror/addon/fold/foldgutter.js'
-  import 'codemirror/addon/fold/brace-fold.js'
-  import 'codemirror/addon/fold/indent-fold.js'
+// foldGutter
+import 'codemirror/addon/fold/foldgutter.css'
+import 'codemirror/addon/fold/foldgutter.js'
+import 'codemirror/addon/fold/brace-fold.js'
+import 'codemirror/addon/fold/indent-fold.js'
 
-  // matchBracket
-  import 'codemirror/addon/edit/matchbrackets.js'
-  import 'codemirror/addon/edit/closebrackets.js'
+// matchBracket
+import 'codemirror/addon/edit/matchbrackets.js'
+import 'codemirror/addon/edit/closebrackets.js'
 
-  export default {
-    name: 'CodeMirror',
-    components: {
-      codemirror
+export default {
+  name: 'CodeMirror',
+  components: {
+    codemirror
+  },
+  props: {
+    value: {
+      type: String,
+      default: ''
     },
-    props: {
-      value: {
-        type: String,
-        default: ''
-      },
-      languages: {
-        type: Array,
-        default: () => {
-          return ['C', 'C++', 'Java', 'Python2']
-        }
-      },
-      language: {
-        type: String,
-        default: 'C++'
-      },
-      theme: {
-        type: String,
-        default: 'solarized'
+    languages: {
+      type: Array,
+      default: () => {
+        return ['C', 'C++', 'Java', 'Python2']
       }
     },
-    data () {
-      return {
-        options: {
-          // codemirror options
-          tabSize: 4,
-          indentUnit: 4,
-          mode: 'text/x-csrc',
-          theme: 'solarized',
-          lineNumbers: true,
-          line: true,
-          matchBrackets: true,
-          autoCloseBrackets: true,
-          // 代码折叠
-          foldGutter: true,
-          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-          // 选中文本自动高亮，及高亮方式
-          styleSelectedText: true,
-          lineWrapping: true,
-          highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true}
-        },
-        mode: {
-          'C++': 'text/x-csrc'
-        },
-        themes: [
-          {label: this.$i18n.t('m.Monokai'), value: 'monokai'},
-          {label: this.$i18n.t('m.Solarized_Light'), value: 'solarized'},
-          {label: this.$i18n.t('m.Material'), value: 'material'}
-        ]
-      }
+    language: {
+      type: String,
+      default: 'C++'
     },
-    mounted () {
-      utils.getLanguages().then(languages => {
-        let mode = {}
-        languages.forEach(lang => {
-          mode[lang.name] = lang.content_type
-        })
-        this.mode = mode
-        this.editor.setOption('mode', this.mode[this.language])
+    theme: {
+      type: String,
+      default: 'material'
+    }
+  },
+  data() {
+    return {
+      options: {
+        // codemirror options
+        tabSize: 4,
+        indentUnit: 4,
+        mode: 'text/x-csrc',
+        theme: 'material',
+        lineNumbers: true,
+        line: true,
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        // 代码折叠
+        foldGutter: true,
+        gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+        // 选中文本自动高亮，及高亮方式
+        styleSelectedText: true,
+        lineWrapping: true,
+        highlightSelectionMatches: { showToken: /\w/, annotateScrollbar: true }
+      },
+      mode: {
+        'C++': 'text/x-csrc'
+      },
+      themes: [
+        { label: this.$i18n.t('m.Monokai'), value: 'monokai' },
+        { label: this.$i18n.t('m.Solarized_Light'), value: 'solarized' },
+        { label: this.$i18n.t('m.Material'), value: 'material' }
+      ]
+    }
+  },
+  mounted() {
+    utils.getLanguages().then(languages => {
+      let mode = {}
+      languages.forEach(lang => {
+        mode[lang.name] = lang.content_type
       })
-      this.editor.focus()
+      this.mode = mode
+      this.editor.setOption('mode', this.mode[this.language])
+    })
+    this.editor.focus()
+  },
+  methods: {
+    onEditorCodeChange(newCode) {
+      this.$emit('update:value', newCode)
     },
-    methods: {
-      onEditorCodeChange (newCode) {
-        this.$emit('update:value', newCode)
-      },
-      onLangChange (newVal) {
-        this.editor.setOption('mode', this.mode[newVal])
-        this.$emit('changeLang', newVal)
-      },
-      onThemeChange (newTheme) {
-        this.editor.setOption('theme', newTheme)
-        this.$emit('changeTheme', newTheme)
-      },
-      onResetClick () {
-        this.$emit('resetCode')
-      },
-      onUploadFile () {
-        document.getElementById('file-uploader').click()
-      },
-      onUploadFileDone () {
-        let f = document.getElementById('file-uploader').files[0]
-        let fileReader = new window.FileReader()
-        let self = this
-        fileReader.onload = function (e) {
-          var text = e.target.result
-          self.editor.setValue(text)
-          document.getElementById('file-uploader').value = ''
-        }
-        fileReader.readAsText(f, 'UTF-8')
-      }
+    onLangChange(newVal) {
+      this.editor.setOption('mode', this.mode[newVal])
+      this.$emit('changeLang', newVal)
     },
-    computed: {
-      editor () {
-        // get current editor object
-        return this.$refs.myEditor.editor
-      }
+    onThemeChange(newTheme) {
+      this.editor.setOption('theme', newTheme)
+      this.$emit('changeTheme', newTheme)
     },
-    watch: {
-      'theme' (newVal, oldVal) {
-        this.editor.setOption('theme', newVal)
+    onResetClick() {
+      this.$emit('resetCode')
+    },
+    onUploadFile() {
+      document.getElementById('file-uploader').click()
+    },
+    onUploadFileDone() {
+      let f = document.getElementById('file-uploader').files[0]
+      let fileReader = new window.FileReader()
+      let self = this
+      fileReader.onload = function (e) {
+        var text = e.target.result
+        self.editor.setValue(text)
+        document.getElementById('file-uploader').value = ''
       }
+      fileReader.readAsText(f, 'UTF-8')
+    }
+  },
+  computed: {
+    editor() {
+      // get current editor object
+      return this.$refs.myEditor.editor
+    }
+  },
+  watch: {
+    'theme'(newVal, oldVal) {
+      this.editor.setOption('theme', newVal)
     }
   }
+}
 </script>
 
 <style lang="less" scoped>
-  .header {
-    margin: 5px 5px 15px 5px;
-    .adjust {
-      width: 150px;
-      margin-left: 10px;
-    }
-    .fl-right {
-      float: right;
-    }
+.header {
+  margin: 5px 5px 15px 5px;
+
+  .adjust {
+    width: 150px;
+    margin-left: 10px;
   }
+
+  .fl-right {
+    float: right;
+  }
+}
 </style>
 
 <style>
-  .CodeMirror {
-    height: auto !important;
-  }
-  .CodeMirror-scroll {
-    min-height: 300px;
-    max-height: 500px;
-  }
+.CodeMirror {
+  height: auto !important;
+}
+
+.CodeMirror-scroll {
+  min-height: 300px;
+  max-height: 500px;
+}
 </style>

@@ -9,10 +9,7 @@
         <div id="problem-main">
             <!--problem main-->
             <Panel :padding="40" shadow>
-                <div class="report"><a title="Báo lỗi bài tập này" target="_blank"
-                        onclick="event.preventDefault();window.open('https://github.com/luyencode/comments/issues/365', '_blank');"
-                        rel="noreferrer nofollow noopener"><i class="ivu-icon ivu-icon-md-bug"></i> {{ $t('m.Report') }}</a>
-                </div>
+
                 <h2 slot="title" class="problem-title">{{ problem._id }} - {{ problem.title }}</h2>
                 <div id="problem-content" class="markdown-body" v-katex>
                     <div>
@@ -21,13 +18,11 @@
                     </div>
                     <!-- {{$t('m.music')}} -->
                     <h3 class="title">{{ $t('m.Input') }} <span v-if="problem.io_mode.io_mode == 'File IO'">({{
-                        $t('m.FromFile') }}: {{ problem.io_mode.input
-    }})</span></h3>
+                        $t('m.FromFile') }}: {{ problem.io_mode.input }})</span></h3>
                     <p class="content" v-html=problem.input_description></p>
 
                     <h3 class="title">{{ $t('m.Output') }} <span v-if="problem.io_mode.io_mode == 'File IO'">({{
-                        $t('m.ToFile') }}: {{ problem.io_mode.output
-    }})</span></h3>
+                        $t('m.ToFile') }}: {{ problem.io_mode.output }})</span></h3>
                     <p class="content" v-html=problem.output_description></p>
                     <h3 class="title">{{ $t('m.Sample') }}</h3>
                     <div v-for="(sample, index) of problem.samples" :key="index">
@@ -67,8 +62,17 @@
 
                 </div>
             </Panel>
+
             <!--problem main end-->
             <Card :padding="20" id="submit-code" ref="submit-code" dis-hover>
+                <ul class="horizontal-list">
+                    <li>
+                        <p>{{ $t('m.Time_Limit') }}: {{ problem.time_limit }}MS</p>
+                    </li>
+                    <li>
+                        <p>{{ $t('m.Memory_Limit') }}: {{ problem.memory_limit }}MB</p>
+                    </li>
+                </ul>
                 <CodeMirror :value.sync="code" :languages="problem.languages" :language="language" :theme="theme"
                     @resetCode="onResetToTemplate" @changeTheme="onChangeTheme" @changeLang="onChangeLang"></CodeMirror>
                 <Row type="flex" justify="space-between">
@@ -118,143 +122,9 @@
                     </Col>
                 </Row>
             </Card>
-            <Card :padding="20" dis-hover>
-                <h3 style="font-size: 20px;">Bình luận</h3>
-                <ul style="margin-left: 30px;margin-top: 20px;">
-                    <li><a rel="nofollow noopener noreferrer" target="_blank" class="animation-text"
-                            href="https://gist.github.com/nguyenvanhieuvn/d3e5e20c44ef9d565fa3d7b9ebabfc65">Quy tắc thảo
-                            luận &#38; hướng dẫn đăng bình luận ✍️</a></li>
-                    <li><span style="font-weight: 600;">NÊN</span> thảo luận giải pháp 😘, <span
-                            style="font-weight: 600;">KHÔNG NÊN</span> chia sẻ code 😐</li>
-                    <li title="Không khuyến khích các bạn chia sẻ lời giải nha">Mọi source code đăng mà không được ẩn sẽ bị
-                        BOT xóa tự động 😭</li>
-                    <li title="BOT của Luyện Code cũng sẽ thường xuyên kiểm duyệt nha"><span style="font-weight: 600;">KHÔNG
-                            NÊN</span> để lộ thông tin cá nhân (SĐT, email, Facebook, ...)</li>
-                    <li>Tham gia thảo luận bài tập tại
-                        <span style="position: relative;">
-                            <a href="https://discord.gg/hpeRrbccfZ" target="_blank" style="position: absolute; left: 10px">
-                                <img alt="Discord"
-                                    src="https://img.shields.io/discord/879371214806712340?label=Discord&logo=Discord">
-                            </a>
-                        </span>
-                    </li>
-                </ul>
-                <script type="application/javascript" src="https://utteranc.es/client.js" repo="luyencode/comments"
-                    issue-term="url" theme="github-light" crossorigin="anonymous" async> </script>
-            </Card>
-        </div>
-        <div id="right-column">
-            <VerticalMenu @on-click="handleRoute" style="cursor: pointer;">
-                <template v-if="this.contestID">
-                    <VerticalMenu-item :route="{ name: 'contest-problem-list', params: { contestID: contestID } }">
-                        <Icon type="ios-photos"></Icon>
-                        {{ $t('m.Problems') }}
-                    </VerticalMenu-item>
-
-                    <VerticalMenu-item :route="{ name: 'contest-announcement-list', params: { contestID: contestID } }">
-                        <Icon type="md-chatbubbles"></Icon>
-                        {{ $t('m.Announcements') }}
-                    </VerticalMenu-item>
-                </template>
-
-                <template v-if="!this.contestID">
-                    <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission"
-                        onclick="let e = document.getElementById('submit-code');window.scrollTo(0, e.offsetTop);">
-                        <Icon type="md-cloud-upload"></Icon>
-                        {{ $t('m.Submit') }}
-                    </VerticalMenu-item>
-                    <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission" :route="submissionRoute">
-                        <Icon type="md-menu"></Icon>
-                        {{ $t('m.Submissions') }}
-                    </VerticalMenu-item>
-                </template>
-
-                <template v-if="this.contestID">
-                    <VerticalMenu-item v-if="!this.contestID || OIContestRealTimePermission"
-                        :route="{ name: 'contest-rank', params: { contestID: contestID } }">
-                        <Icon type="md-stats"></Icon>
-                        {{ $t('m.Rankings') }}
-                    </VerticalMenu-item>
-                    <VerticalMenu-item :route="{ name: 'contest-details', params: { contestID: contestID } }">
-                        <Icon type="md-home"></Icon>
-                        {{ $t('m.View_Contest') }}
-                    </VerticalMenu-item>
-                </template>
-            </VerticalMenu>
-
-            <Card id="info">
-                <div slot="title" class="header">
-                    <Icon type="md-information-circle"></Icon>
-                    <span class="card-title">{{ $t('m.Information_Problem') }}</span>
-                </div>
-                <ul>
-                    <li>
-                        <p>ID</p>
-                        <p>{{ problem._id }}</p>
-                    </li>
-                    <li>
-                        <p>{{ $t('m.Time_Limit') }}</p>
-                        <p>{{ problem.time_limit }}MS</p>
-                    </li>
-                    <li>
-                        <p>{{ $t('m.Memory_Limit') }}</p>
-                        <p>{{ problem.memory_limit }}MB</p>
-                    </li>
-                    <li>
-                        <p>{{ $t('m.IOMode') }}</p>
-                        <p>{{ problem.io_mode.io_mode }}</p>
-                    </li>
-                    <li>
-                        <p>{{ $t('m.Created') }}</p>
-                        <p>{{ problem.created_by.username }}</p>
-                    </li>
-                    <li v-if="problem.difficulty">
-                        <p>{{ $t('m.Level') }}</p>
-                        <p>{{ $t('m.' + problem.difficulty) }}</p>
-                    </li>
-                    <li v-if="problem.total_score">
-                        <p>{{ $t('m.Score') }}</p>
-                        <p>{{ problem.total_score }}</p>
-                    </li>
-                    <li>
-                        <p>{{ $t('m.Tags') }}</p>
-                        <p>
-                            <Poptip trigger="hover" placement="left-end">
-                                <a>{{ $t('m.Show') }}</a>
-                                <div slot="content">
-                                    <Tag style="cursor: pointer;" v-for="tag in problem.tags" :key="tag"
-                                        @click.native="handleRoute('/problem?tag=' + tag)">
-                                        {{ tag }}
-                                    </Tag>
-                                </div>
-                            </Poptip>
-                        </p>
-                    </li>
-                </ul>
-            </Card>
-
-            <Card id="pieChart" :padding="0" v-if="!this.contestID || OIContestRealTimePermission">
-                <div slot="title">
-                    <Icon type="ios-analytics"></Icon>
-                    <span class="card-title">{{ $t('m.Statistic') }}</span>
-                    <Button size="small" id="detail" @click="graphVisible = !graphVisible">{{ $t('m.Details') }}</Button>
-                </div>
-                <div class="echarts">
-                    <ECharts :options="pie"></ECharts>
-                </div>
-            </Card>
-
 
         </div>
 
-        <Modal v-model="graphVisible">
-            <div id="pieChart-detail">
-                <ECharts :options="largePie" :initOptions="largePieInitOpts"></ECharts>
-            </div>
-            <div slot="footer">
-                <Button @click="graphVisible = false">{{ $t('m.Close') }}</Button>
-            </div>
-        </Modal>
     </div>
 </template>
 
@@ -266,13 +136,19 @@ import storage from '@/utils/storage'
 import { FormMixin } from '@oj/components/mixins'
 import { JUDGE_STATUS, CONTEST_STATUS, buildProblemCodeKey } from '@/utils/constants'
 import api from '@oj/api'
-import { pie, largePie } from './chartData'
+import { pie, largePie } from '../problem/chartData'
 // 只显示这些状态的图形占用
 const filtedStatus = ['-1', '-2', '0', '1', '2', '3', '4', '8']
 export default {
-    name: 'Problem',
+    name: 'QuestionOE',
     components: {
         CodeMirror
+    },
+    props: {
+        questionItem: {
+            type: JSON,
+            required: true
+        }
     },
     mixins: [FormMixin],
     data() {
@@ -295,9 +171,9 @@ export default {
             contestID: '',
             problemID: '',
             submitting: false,
-            code: '',
-            language: 'C++',
-            theme: 'solarized',
+            code: ``,
+            language: '',
+            theme: 'material',
             submissionId: '',
             submitted: false,
             exited: false,
@@ -330,7 +206,7 @@ export default {
         }
     },
     beforeRouteEnter(to, from, next) {
-        let problemCode = storage.get(buildProblemCodeKey(to.params.problemID, to.params.contestID))
+        let problemCode = storage.get(buildProblemCodeKey('bài tập lớn', to.params.contestID))
         let OverallCode = storage.get(buildProblemCodeKey('Overall'))
         if (problemCode) {
             if (problemCode.code !== '') {
@@ -355,6 +231,19 @@ export default {
         }
     },
     mounted() {
+        if (!this.questionItem) {
+            this.questionItem = {
+                "code": "",
+                "language": "C++"
+            }
+            this.$emit('update:questionItem', {
+                "code": "",
+                "language": "C++"
+            });
+        }
+        this.code = this.questionItem.code;
+        this.language = this.questionItem.language;
+
         this.$store.commit(types.CHANGE_CONTEST_ITEM_VISIBLE, { menu: false })
         this.init()
     },
@@ -363,8 +252,8 @@ export default {
         init() {
             this.$Loading.start()
             this.contestID = this.$route.params.contestID
-            this.problemID = this.$route.params.problemID
-            let func = this.$route.name === 'problem-details' ? 'getProblem' : 'getContestProblem'
+            this.problemID = "bài tập lớn"
+            let func = this.$route.name === 'problem-details' ? 'getProblem' : 'getProblem'
             api[func](this.problemID, this.contestID).then(res => {
                 this.$Loading.finish()
                 let problem = res.data.data
@@ -447,6 +336,7 @@ export default {
                 }
             }
             this.language = newLang
+            this.questionItem.language = newLang
         },
         onChangeTheme(newTheme) {
             this.theme = newTheme
@@ -521,8 +411,8 @@ export default {
             }
             const submitFunc = (data, detailsVisible) => {
                 this.statusVisible = true
-                api.submitCode(data).then(res => {
-                    this.submissionId = res.data.data && res.data.data.submission_id
+                api.submitCodeAnswer(data).then(res => {
+                    this.submissionId = res.data.data && res.data.data.id
                     // 定时检查状态
                     this.submitting = false
                     this.submissionExists = true
@@ -615,6 +505,11 @@ export default {
     watch: {
         '$route'() {
             this.init()
+        },
+        'code'(value) {
+            if (JSON.stringify(value) !== this.questionItem.code) {
+                this.questionItem.code = value
+            }
         }
     }
 }
@@ -791,6 +686,19 @@ export default {
 
 .report a:hover {
     color: red;
+}
+
+.horizontal-list {
+    display: flex;
+    list-style: none;
+    /* Xóa dấu đầu của danh sách */
+    padding: 0;
+    /* Xóa padding mặc định */
+}
+
+.horizontal-list li {
+    margin-right: 20px;
+    /* Khoảng cách giữa các phần tử li */
 }
 </style>
 

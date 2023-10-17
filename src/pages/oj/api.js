@@ -336,6 +336,11 @@ export default {
       data
     });
   },
+  submitCodeAnswer(data) {
+    return ajax("submissionAnswer", "post", {
+      data
+    });
+  },
   getSubmissionList(offset, limit, params) {
     params.limit = limit;
     params.offset = offset;
