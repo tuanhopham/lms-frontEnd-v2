@@ -23,7 +23,7 @@
             </div>
         </el-table-column>
     </el-table>
-    <EditQuestion :questionData="question" :quizId="quizId" :isEditQuestion="isEditQuestion" :handleCloseDialog="handleCloseDialog" />
+    <EditQuestion :problemsList="problemsList" :questionData="question" :quizId="quizId" :isEditQuestion="isEditQuestion" :handleCloseDialog="handleCloseDialog" />
 
 </div>
 </template>
@@ -49,11 +49,13 @@ export default {
         return {
             questionList: [],
             question: {},
-            isEditQuestion: false
+            isEditQuestion: false,
+            problemsList:[],
         };
     },
     mounted() {
         this.getQuestionList();
+        this.getProblemsList();
     },
     watch: {
         'isCreateQuestion'(val) {
@@ -75,6 +77,13 @@ export default {
                 },
             );
 
+        },
+        getProblemsList() {
+            api["getProblemsList"]().then(
+                res => {
+                    this.problemsList = res.data.data;
+                }
+            )
         },
         handleCloseDialog(name) {
             this[name] = false;

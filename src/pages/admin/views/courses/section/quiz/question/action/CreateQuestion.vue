@@ -59,6 +59,13 @@
                     <el-button v-if="editAnswer === true" type="primary" @click.native="updateCheckAnswer">Update</el-button>
                 </span>
             </el-col>
+                <el-col v-if="question.questionType === 'OE'" :span="24" class="marginBottom">
+                        <el-select placeholder="Quention Type" v-model="question.problemId" @change="changeProblemId">
+                            <el-option v-for="problem in problemsList" :key="problem.problemId" :value="problem.problemId">
+                                {{ problem.problemId }}
+                            </el-option>
+                        </el-select>
+                    </el-col>
             <el-col :span="24" class="marginBottom">
                 <template v-if="checkRender">
                     <el-table :data="question.resultList" style="width: 100%">
@@ -135,6 +142,7 @@ export default {
             true_false: false,
             editAnswer: false,
             listAnswer: [],
+            problemsList:[],
             incId: 1,
             QAmodel: "",
             checkCorrect: false,
@@ -173,6 +181,7 @@ export default {
         if ((this.question.resultList = "")) {
             return (this.question.resultList.length = 0);
         }
+         this.getProblemsList();
     },
     computed: {
         answerConditional() {
@@ -211,6 +220,14 @@ export default {
         }
     },
     methods: {
+          getProblemsList() {
+            api["getProblemsList"]().then(
+                res => {
+                    this.problemsList = res.data.data;
+                    console.log(this.problemsList)
+                }
+            )
+        },
         saveQuestion(formName) {
             this.$refs[formName].validate(valid => {
                 if (valid) {

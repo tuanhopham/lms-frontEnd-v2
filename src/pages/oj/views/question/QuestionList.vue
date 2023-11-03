@@ -68,9 +68,11 @@
                         v-if="questionItem.questionType == 'OE'"
                         v-model="typeText[questionItem.id]"
                       /> -->
-                      <QuestionOE v-if="questionItem.questionType == 'OE'"
-                     :questionItem="typeText[questionItem.id]"
-                      @update:questionItem="updateQuestionItem"
+                      <QuestionOE  v-if="questionItem.questionType == 'OE'"
+                     :answer="typeText[questionItem.id]"
+                     :questionItem = "questionItem"
+                      @update:answer="updateQuestionItem"
+                      @save:handleSave = "saveAnswerOE"
                       />
                       <RadioGroup
                         class="space"
@@ -235,6 +237,7 @@ export default {
         minutes: "",
         seconds: ""
       },
+      submissionId:"",
       timeDown: "",
       questionCheck: [],
       data: [],
@@ -500,12 +503,12 @@ export default {
         isSaved: (this.isSaved[this.questionItem.id] = true)
       });
       const postData = this.data.find(data => data.questionId === questionId);
-      console.log(prevData, postData, questionType)
-      if (JSON.stringify(prevData) !== JSON.stringify(postData) || questionType === 'OE') {
-        api.postSaveOneAnswer(postData).then(res => {
+      if ((JSON.stringify(prevData) !== JSON.stringify(postData)&& questionType !== 'OE') ||(questionType === 'OE'&& this.submissionId !=="")) {
+        api.postSaveOneAnswer({...postData , submissionId : this.submissionId }).then(res => {
           console.log("Data push to DB---", res.data);
         });
         this.$success("Answer saved!");
+        this.submissionId= ""
       }
     },
     handleNext() {
@@ -598,8 +601,11 @@ export default {
       }, 1000);
     },
     updateQuestionItem(updatedItem) {
-      console.log(updatedItem)
       this.typeText[this.questionItem.id] = updatedItem;
+    },
+    saveAnswerOE(submissionId, questionItem) {
+      this.submissionId = submissionId;
+      this.handleSave(questionItem.id, questionItem.questionType);
     }
   },
   beforeDestroy() {

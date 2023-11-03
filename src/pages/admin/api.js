@@ -289,6 +289,9 @@ export default {
       params
     });
   },
+  getProblemsList() {
+    return ajax("listProblems", "get");
+  },
   compileSPJ(data) {
     return ajax("admin/compile_spj", "post", {
       data
@@ -452,6 +455,7 @@ export default {
       data
     });
   },
+
   deleteQuizQuestion(quizId, id) {
     return ajax(`quiz/${quizId}/question/${id}`, "delete", {
       params: {

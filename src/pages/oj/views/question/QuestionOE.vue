@@ -145,10 +145,14 @@ export default {
         CodeMirror
     },
     props: {
-        questionItem: {
+        answer: {
             type: JSON,
             required: true
-        }
+        },
+          questionItem: {
+            type: Object,
+            required: true
+        },
     },
     mixins: [FormMixin],
     data() {
@@ -166,6 +170,7 @@ export default {
                 page: 1,
                 orderby: '-create_time'
             },
+            submissionId:'',
             captchaCode: '',
             captchaSrc: '',
             contestID: '',
@@ -174,7 +179,6 @@ export default {
             code: ``,
             language: '',
             theme: 'material',
-            submissionId: '',
             submitted: false,
             exited: false,
             result: {
@@ -206,7 +210,7 @@ export default {
         }
     },
     beforeRouteEnter(to, from, next) {
-        let problemCode = storage.get(buildProblemCodeKey('bài tập lớn', to.params.contestID))
+        let problemCode = storage.get(buildProblemCodeKey(this.questionItem.problemId, to.params.contestID))
         let OverallCode = storage.get(buildProblemCodeKey('Overall'))
         if (problemCode) {
             if (problemCode.code !== '') {
@@ -230,19 +234,20 @@ export default {
             next()
         }
     },
-    mounted() {
-        if (!this.questionItem) {
-            this.questionItem = {
+    created() {
+        this.problemID = this.questionItem.problemId
+        if (!this.answer) {
+             this.answer = {
                 "code": "",
                 "language": "C++"
             }
-            this.$emit('update:questionItem', {
+            this.$emit('update:answer', {
                 "code": "",
                 "language": "C++"
             });
         }
-        this.code = this.questionItem.code;
-        this.language = this.questionItem.language;
+        this.code = this.answer.code;
+        this.language = this.answer.language;
 
         this.$store.commit(types.CHANGE_CONTEST_ITEM_VISIBLE, { menu: false })
         this.init()
@@ -252,7 +257,7 @@ export default {
         init() {
             this.$Loading.start()
             this.contestID = this.$route.params.contestID
-            this.problemID = "bài tập lớn"
+            this.problemID = this.questionItem.problemId
             let func = this.$route.name === 'problem-details' ? 'getProblem' : 'getProblem'
             api[func](this.problemID, this.contestID).then(res => {
                 this.$Loading.finish()
@@ -336,7 +341,7 @@ export default {
                 }
             }
             this.language = newLang
-            this.questionItem.language = newLang
+            this.answer.language = newLang
         },
         onChangeTheme(newTheme) {
             this.theme = newTheme
@@ -414,6 +419,7 @@ export default {
                 api.submitCodeAnswer(data).then(res => {
                     this.submissionId = res.data.data && res.data.data.id
                     // 定时检查状态
+                    this.$emit('save:handleSave', this.submissionId, this.questionItem);
                     this.submitting = false
                     this.submissionExists = true
                     if (!detailsVisible) {
@@ -424,6 +430,7 @@ export default {
                         return
                     }
                     this.submitted = true
+                    
                     this.checkSubmissionStatus()
                 }, res => {
                     this.getCaptchaSrc()
@@ -507,9 +514,23 @@ export default {
             this.init()
         },
         'code'(value) {
-            if (JSON.stringify(value) !== this.questionItem.code) {
-                this.questionItem.code = value
+            if (JSON.stringify(value) !== this.answer.code) {
+                this.answer.code = value
             }
+        },
+        'answer'(value) {
+              if (!this.answer) {
+                this.answer = {
+                    "code": "",
+                    "language": "C++"
+                }
+                this.$emit('update:answer', {
+                    "code": "",
+                    "language": "C++"
+                });
+            }
+            this.code = this.answer.code 
+            this.language = this.answer.language;
         }
     }
 }
