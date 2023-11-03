@@ -419,7 +419,7 @@ export default {
                 api.submitCodeAnswer(data).then(res => {
                     this.submissionId = res.data.data && res.data.data.id
                     // 定时检查状态
-                    this.$emit('save:handleSave', this.submissionId, this.questionItem);
+                 
                     this.submitting = false
                     this.submissionExists = true
                     if (!detailsVisible) {
@@ -432,6 +432,9 @@ export default {
                     this.submitted = true
                     
                     this.checkSubmissionStatus()
+                    setTimeout(() => {
+                        this.$emit('save:handleSave', this.submissionId, this.questionItem);
+                    }, 2000)
                 }, res => {
                     this.getCaptchaSrc()
                     if (res.data.data.startsWith('Captcha is required')) {
