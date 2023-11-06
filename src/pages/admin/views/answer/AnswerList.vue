@@ -81,7 +81,10 @@
                         </div>
 
                         <div v-if="answer.questionType == 'OE'">
-                            <p v-html="answer.answer"></p>
+                            <p>language:{{answer.answer.language}}</p>
+                           <div class="code-box">
+                            <p>{{answer.answer.code}}</p>
+                            </div>
                         </div>
                     </div>
                     <div class="itemFlex" v-if="!['success', 'info'].includes(answer.statusAnswer)">
@@ -120,50 +123,38 @@
                     </div>
 
                 </div>
-                 <!-- Nhap Diem -->
-            <div class="item-score" v-if="answer.questionType == 'OE'">
-                <el-row>
-                    <el-col :span="7"  style="display:flex;justify-content:end" :offset="14">
-                        <el-input-number :max="answer.score" :min="0" v-model="answer.userScore" @change="handleChangeUserScore($event, index)"></el-input-number>
-
-                    </el-col>
-                    <el-col :span="
-                    3" style="display:flex;justify-content:center" >
-                        <el-button icon="el-icon-fa-file" type="danger"  @click="handleSaveOEQuestions(answer)" >Save</el-button>
-                    </el-col>
-                </el-row>
-            </div>
             </div>
            
         </li>
-        <!-- submit -->
     </ul>
-    <!-- <div class="item-submit">
-        <el-button icon="el-icon-fa-check" type="success">Submit</el-button>
-    </div> -->
+ 
 </div>
 </template>
 
 <script>
 import api from '../../api';
+import CodeMirror from '../../components/CodeMirror.vue'
 
 export default {
     name: "AnswerList",
     props: ["answerUserList"],
+    components: {
+        CodeMirror
+    },
     data() {
         return {
-            
+
         };
     },
     methods: {
-        handleSaveOEQuestions (answer){
-            api.saveScoreAnswer(answer.answerId,{ userScore :answer.userScore}).then(res => {
+        handleSaveOEQuestions(answer) {
+            api.saveScoreAnswer(answer.answerId, { userScore: answer.userScore }).then(res => {
             }).catch(err => { console.log(err); })
         },
-         handleChangeUserScore(newValue, answerIndex) {
+        handleChangeUserScore(newValue, answerIndex) {
             this.answerUserList[answerIndex].userScore = newValue;
         }
-        
+
     },
     computed: {
         answerUserListResult() {
@@ -185,6 +176,14 @@ export default {
 </script>
 
 <style lang="" scoped>
+.code-box {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  margin: 20px 0;
+}
+
 .space {
     margin: 15px;
     white-space: normal;
