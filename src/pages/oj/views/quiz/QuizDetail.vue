@@ -5,7 +5,7 @@
         <h2 style="text-align: center">{{quiz.title}}</h2>
         <h3 class="important top">*Lưu ý: Các câu trắc nghiệm sẽ tự động được chấm ngay sau khi submit còn các câu tự luận sẽ được chấm sau</h3>
         <h4 class="important top">Số lần làm bài hiện tại: {{quiz.userCompletedQuiz}}/{{quiz.maxTest}}</h4>
-        <h4 class="important">Kết quả cao nhất đạt được: {{quiz.highestScore}}/{{quiz.totalScore}}</h4>
+        <!-- <h4 class="important">Kết quả cao nhất đạt được: {{quiz.highestScore}}/{{quiz.totalScore}}</h4> -->
         <h3 v-html="quiz.description" class="top"></h3>
       </div>
       <div class="quiz-action">
