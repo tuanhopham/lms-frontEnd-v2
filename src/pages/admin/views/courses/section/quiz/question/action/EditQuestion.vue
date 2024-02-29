@@ -23,6 +23,7 @@
                             <el-option key="RANK" value="RANK">Ranked</el-option>
                             <el-option key="TF" value="TF">True False</el-option>
                             <el-option key="OE" value="OE">Open Ended</el-option>
+                            <el-option key="EQ" value="EQ">Essay questions</el-option>
                         </el-select>
                     </el-form-item>
                 </el-col>
@@ -525,7 +526,7 @@ export default {
             this.listAnswer = [];
             this.incId = 1;
         },
-       
+
     },
     watch: {
         'isEditQuestion'(val) {
@@ -550,4 +551,5 @@ export default {
 .incorrectLabel {
     font-size: 20px;
     color: red;
-}</style>
+}
+</style>

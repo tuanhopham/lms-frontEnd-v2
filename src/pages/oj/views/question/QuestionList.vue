@@ -22,12 +22,28 @@
             <Col v-if="endCount" class="question-item" :span="24">
               <p>Đã hết thời gian</p>
             </Col>
-            <Col v-if="!endCount" class="question-item" v-loading="loading"
-              v-for="(question, index) in questionList.questions" :key="question.id" 
-              :xs="24" :sm="12" :md="8" :lg="6">
-              <p :class="{ active: question.isActive }"
-                @click="getQuestionItem(question.id, index, question.questionType)">
-                <i class="el-icon-check" v-if="isSaved[question.id]" style="color: green;"></i>
+            <Col
+              v-if="!endCount"
+              class="question-item"
+              v-loading="loading"
+              v-for="(question, index) in questionList.questions"
+              :key="question.id"
+              :xs="24"
+              :sm="12"
+              :md="8"
+              :lg="6"
+            >
+              <p
+                :class="{ active: question.isActive }"
+                @click="
+                  getQuestionItem(question.id, index, question.questionType)
+                "
+              >
+                <i
+                  class="el-icon-check"
+                  v-if="isSaved[question.id]"
+                  style="color: green;"
+                ></i>
                 Question {{ index + 1 }}
               </p>
             </Col>
@@ -42,7 +58,7 @@
         </Card>
       </Col>
       <!-- Question item -->
-    
+
       <Col
         :span="24"
         v-if="!endCount && questionStt && questionItem"
@@ -68,11 +84,12 @@
                         v-if="questionItem.questionType == 'OE'"
                         v-model="typeText[questionItem.id]"
                       /> -->
-                      <QuestionOE  v-if="questionItem.questionType == 'OE'"
-                     :answer="typeText[questionItem.id]"
-                     :questionItem = "questionItem"
-                      @update:answer="updateQuestionItem"
-                      @save:handleSave = "saveAnswerOE"
+                      <QuestionOE
+                        v-if="questionItem.questionType == 'OE'"
+                        :answer="typeText[questionItem.id]"
+                        :questionItem="questionItem"
+                        @update:answer="updateQuestionItem"
+                        @save:handleSave="saveAnswerOE"
                       />
                       <RadioGroup
                         class="space"
@@ -165,6 +182,15 @@
                           }}</el-text>
                         </div>
                       </div>
+                      <div v-if="questionItem.questionType == 'EQ'">
+                        <el-input
+                          type="textarea"
+                          :rows="5"
+                          placeholder="Please enter your response here."
+                          v-model="answerEQ"
+                        >
+                        </el-input>
+                      </div>
                     </div>
                   </div>
                   <!-- Question action -->
@@ -199,7 +225,14 @@
                       type="success"
                       icon="md-checkmark"
                       class="btn"
-                      @click="handleSubmit(courseId, sectionId, quizId, questionList.quizUserId)"
+                      @click="
+                        handleSubmit(
+                          courseId,
+                          sectionId,
+                          quizId,
+                          questionList.quizUserId
+                        )
+                      "
                       >Submit</Button
                     >
                   </Col>
@@ -237,16 +270,19 @@ export default {
         minutes: "",
         seconds: ""
       },
-      submissionId:"",
+      submissionId: "",
       timeDown: "",
       questionCheck: [],
       data: [],
+
       typeRadio: {},
       typeText: {},
       typeListRadio: {},
       typeListCheckBoxObj: [],
       listSelectMAT: [],
       listSelectRank: [],
+      answerEQ: "",
+
       endCount: false,
       saveCount: 0,
       checkQuestion: 0,
@@ -374,6 +410,11 @@ export default {
                 this.isSaved[this.questionItem.id] = dataItem.isSaved;
               }
               break;
+            case "EQ":
+              if (dataItem.questionType == "EQ" && dataItem.answer.length > 0) {
+                this.answerEQ = dataItem.answer;
+                this.isSaved[this.questionItem.id] = dataItem.isSaved;
+              }
             default:
               break;
           }
@@ -385,13 +426,19 @@ export default {
         ...this.listSelectMAT[this.questionItem.id]
       });
       // Cập nhật trạng thái của câu hỏi "MAT" trong mảng matQuestions
-      const matQuestion = this.matQuestions.find(q => q.questionId === this.questionItem.id);
+      const matQuestion = this.matQuestions.find(
+        q => q.questionId === this.questionItem.id
+      );
       if (matQuestion) {
-        matQuestion.renderSaveButton = Object.values(this.listSelectMAT[this.questionItem.id]).some(value => value != null);
+        matQuestion.renderSaveButton = Object.values(
+          this.listSelectMAT[this.questionItem.id]
+        ).some(value => value != null);
       } else {
         this.matQuestions.push({
           questionId: this.questionItem.id,
-          renderSaveButton: Object.values(this.listSelectMAT[this.questionItem.id]).some(value => value != null)
+          renderSaveButton: Object.values(
+            this.listSelectMAT[this.questionItem.id]
+          ).some(value => value != null)
         });
       }
     },
@@ -400,20 +447,29 @@ export default {
         ...this.listSelectRank[this.questionItem.id]
       });
       // Cập nhật trạng thái của câu hỏi "RANK" trong mảng rankQuestions
-      const rankQuestion = this.rankQuestions.find(q => q.questionId === this.questionItem.id);
+      const rankQuestion = this.rankQuestions.find(
+        q => q.questionId === this.questionItem.id
+      );
       if (rankQuestion) {
-        rankQuestion.renderSaveButton = Object.values(this.listSelectRank[this.questionItem.id]).some(value => value != null);
+        rankQuestion.renderSaveButton = Object.values(
+          this.listSelectRank[this.questionItem.id]
+        ).some(value => value != null);
       } else {
         this.rankQuestions.push({
           questionId: this.questionItem.id,
-          renderSaveButton: Object.values(this.listSelectRank[this.questionItem.id]).some(value => value != null)
+          renderSaveButton: Object.values(
+            this.listSelectRank[this.questionItem.id]
+          ).some(value => value != null)
         });
       }
     },
     shouldRenderSaveButton() {
       switch (this.questionItem.questionType) {
         case "TF":
-          if (this.typeRadio[this.questionItem.id] == true || this.typeRadio[this.questionItem.id] == false) {
+          if (
+            this.typeRadio[this.questionItem.id] == true ||
+            this.typeRadio[this.questionItem.id] == false
+          ) {
             return true;
           }
           return false;
@@ -434,12 +490,21 @@ export default {
           return false;
         case "MAT":
           // Truy xuất đến trạng thái của câu hỏi "MAT" trong mảng matQuestions
-          const matQuestion = this.matQuestions.find(q => q.questionId === this.questionItem.id);
+          const matQuestion = this.matQuestions.find(
+            q => q.questionId === this.questionItem.id
+          );
           return matQuestion ? matQuestion.renderSaveButton : false;
         case "RANK":
           // Truy xuất đến trạng thái của câu hỏi "RANK" trong mảng rankQuestions
-          const rankQuestion = this.rankQuestions.find(q => q.questionId === this.questionItem.id);
+          const rankQuestion = this.rankQuestions.find(
+            q => q.questionId === this.questionItem.id
+          );
           return rankQuestion ? rankQuestion.renderSaveButton : false;
+        case "EQ":
+          if (this.answerEQ) {
+            return true;
+          }
+          return false;
         default:
           return false;
       }
@@ -473,19 +538,34 @@ export default {
           }
           break;
         case "MAT":
-          if (Object.values(this.listSelectMAT[this.questionItem.id]).some(i => i)) {
-            answer = Object.keys(this.listSelectMAT[this.questionItem.id]).map(key => ({
-              id: key,
-              value: this.listSelectMAT[this.questionItem.id][key]
-            }));
+          if (
+            Object.values(this.listSelectMAT[this.questionItem.id]).some(i => i)
+          ) {
+            answer = Object.keys(this.listSelectMAT[this.questionItem.id]).map(
+              key => ({
+                id: key,
+                value: this.listSelectMAT[this.questionItem.id][key]
+              })
+            );
           }
           break;
         case "RANK":
-          if (Object.values(this.listSelectRank[this.questionItem.id]).some(i => i)) {
-            answer = Object.keys(this.listSelectRank[this.questionItem.id]).map(key => ({
-              id: key,
-              value: this.listSelectRank[this.questionItem.id][key]
-            }));
+          if (
+            Object.values(this.listSelectRank[this.questionItem.id]).some(
+              i => i
+            )
+          ) {
+            answer = Object.keys(this.listSelectRank[this.questionItem.id]).map(
+              key => ({
+                id: key,
+                value: this.listSelectRank[this.questionItem.id][key]
+              })
+            );
+          }
+          break;
+        case "EQ":
+          if (this.answerEQ) {
+            answer = this.answerEQ;
           }
           break;
         default:
@@ -503,12 +583,18 @@ export default {
         isSaved: (this.isSaved[this.questionItem.id] = true)
       });
       const postData = this.data.find(data => data.questionId === questionId);
-      if ((JSON.stringify(prevData) !== JSON.stringify(postData)&& questionType !== 'OE') ||(questionType === 'OE'&& this.submissionId !=="")) {
-        api.postSaveOneAnswer({...postData , submissionId : this.submissionId }).then(res => {
-          console.log("Data push to DB---", res.data);
-        });
+      if (
+        (JSON.stringify(prevData) !== JSON.stringify(postData) &&
+          questionType !== "OE") ||
+        (questionType === "OE" && this.submissionId !== "")
+      ) {
+        api
+          .postSaveOneAnswer({ ...postData, submissionId: this.submissionId })
+          .then(res => {
+            console.log("Data push to DB---", res.data);
+          });
         this.$success("Answer saved!");
-        this.submissionId= ""
+        this.submissionId = "";
       }
     },
     handleNext() {
@@ -521,6 +607,7 @@ export default {
         this.questionList.questions[this.currentIndex].id,
         this.currentIndex
       );
+      this.answerEQ = "";
     },
     handlePrev() {
       this.isButtonClicked = true;
@@ -532,6 +619,7 @@ export default {
         this.questionList.questions[this.currentIndex].id,
         this.currentIndex
       );
+      this.answerEQ = "";
     },
     async handleSubmit(courseId, sectionId, quizId, quizUserId) {
       this.$Modal.confirm({
@@ -542,33 +630,65 @@ export default {
         <p class='alert-text'>Are you sure you want to finish your test?</p>\
       </div>",
         onOk: async () => {
-          await this.handleSave(this.questionItem.id, this.questionItem.questionType);
+          await this.handleSave(
+            this.questionItem.id,
+            this.questionItem.questionType
+          );
           try {
-            const res = await api.pushSubmitQuiz(courseId, sectionId, quizId, quizUserId);
+            const res = await api.pushSubmitQuiz(
+              courseId,
+              sectionId,
+              quizId,
+              quizUserId
+            );
             this.isSubmit = res.data.isSubmit;
             this.TimeField(this.isSubmit);
-            this.$success("Bạn đã nạp bài thành công")
-            this.$router.push({ name: "quiz-detail-user", params: { sectionId: sectionId, quizId: quizId } });
+            this.$success("Bạn đã nạp bài thành công");
+            this.$router.push({
+              name: "quiz-detail-user",
+              params: { sectionId: sectionId, quizId: quizId }
+            });
           } catch (error) {
             this.$error("Can't push!");
           }
         },
-        onCancel: () => { }
+        onCancel: () => {}
       });
     },
     TimeField() {
-      const [hours, minutes, seconds] = this.questionList.quizTime.split(":").map(Number);
-      if (this.isSubmit == false || new Date < new Date(this.questionList.timeEnd)) {
-        var timeToAdd = hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000;
-      } else if (this.isSubmit == true || new Date > new Date(this.questionList.timeEnd)) {
+      const [hours, minutes, seconds] = this.questionList.quizTime
+        .split(":")
+        .map(Number);
+      if (
+        this.isSubmit == false ||
+        new Date() < new Date(this.questionList.timeEnd)
+      ) {
+        var timeToAdd =
+          hours * 60 * 60 * 1000 + minutes * 60 * 1000 + seconds * 1000;
+      } else if (
+        this.isSubmit == true ||
+        new Date() > new Date(this.questionList.timeEnd)
+      ) {
         var timeToAdd = 0;
       }
-      const timeRemaining = timeToAdd - (new Date() - new Date(this.questionList.timeStart));
-      const pad = (value) => String(value).padStart(2, "0");
-      this.countTime.hours = Math.max(0, Math.floor(timeRemaining / (1000 * 60 * 60)));
-      this.countTime.minutes = Math.max(0, Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60)));
-      this.countTime.seconds = Math.max(0, Math.floor((timeRemaining % (1000 * 60)) / 1000));
-      this.timeDown = `${pad(this.countTime.hours)}:${pad(this.countTime.minutes)}:${pad(this.countTime.seconds)}`;
+      const timeRemaining =
+        timeToAdd - (new Date() - new Date(this.questionList.timeStart));
+      const pad = value => String(value).padStart(2, "0");
+      this.countTime.hours = Math.max(
+        0,
+        Math.floor(timeRemaining / (1000 * 60 * 60))
+      );
+      this.countTime.minutes = Math.max(
+        0,
+        Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60))
+      );
+      this.countTime.seconds = Math.max(
+        0,
+        Math.floor((timeRemaining % (1000 * 60)) / 1000)
+      );
+      this.timeDown = `${pad(this.countTime.hours)}:${pad(
+        this.countTime.minutes
+      )}:${pad(this.countTime.seconds)}`;
     },
     startTimer() {
       this.interval = setInterval(() => {
