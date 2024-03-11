@@ -158,6 +158,22 @@ export default {
         this.answerUserList = value;
       }
     }
+  },
+  watch: {
+    answerUserList(val) {
+      this.quizListUser.forEach(quizUser => {
+        const matchedQAs = quizUser.QA.filter(answer =>
+          val.some(newAnswer => newAnswer.answerId === answer.answerId)
+        );
+
+        if (matchedQAs.length > 0) {
+          quizUser.totalScoreUser = matchedQAs.reduce(
+            (total, answer) => total + answer.userScore,
+            0
+          );
+        }
+      });
+    }
   }
 };
 </script>

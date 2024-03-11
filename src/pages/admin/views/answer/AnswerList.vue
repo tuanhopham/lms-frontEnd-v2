@@ -30,21 +30,22 @@
               </p>
               <h4 class="question-item" v-html="answer.question"></h4>
             </div>
+
             <div v-if="answer.questionType == 'EQ'" class="markQuestion">
               <span class="demo-input-label">Mark:</span>
               <el-input-number
-                v-model="markQuestion"
-                @change="handleChange"
-                :min="0"
-                :max="answer.score"
                 size="small"
                 placeholder="Mark"
+                v-model.number="markQuestion[answer.answerId]"
+                :min="0"
+                :max="answer.score"
               ></el-input-number>
               <el-button
                 type="primary"
                 size="small"
                 icon="el-icon-check"
-                :disabled="markQuestion === undefined"
+                :disabled="markQuestion[answer.answerId] === undefined"
+                @click="handleSaveOEQuestions(answer)"
               ></el-button>
             </div>
           </div>
@@ -265,20 +266,33 @@ export default {
   },
   data() {
     return {
-      markQuestion: undefined
+      markQuestion: {}
     };
   },
   methods: {
     handleSaveOEQuestions(answer) {
       api
-        .saveScoreAnswer(answer.answerId, { userScore: answer.userScore })
-        .then(res => {})
+        .saveScoreAnswer(answer.answerId, {
+          userScore: this.markQuestion[answer.answerId]
+        })
+        .then(res => {
+          this.handleChangeUserScore(
+            this.markQuestion[answer.answerId],
+            answer.answerId
+          );
+        })
         .catch(err => {
           console.log(err);
         });
     },
-    handleChangeUserScore(newValue, answerIndex) {
-      this.answerUserList[answerIndex].userScore = newValue;
+    handleChangeUserScore(newValue, answerId) {
+      const index = this.answerUserList.findIndex(i => i.answerId === answerId);
+      if (index !== -1) {
+        this.$set(this.answerUserList, index, {
+          ...this.answerUserList[index],
+          userScore: newValue
+        });
+      }
     }
   },
   computed: {
@@ -288,7 +302,13 @@ export default {
         if (data.userScore === data.score) statusAnswer = "success"; //Nếu user Trả lời đúng
         if (data.userScore === 0) statusAnswer = "danger"; //Nếu user Trả lời sai
         if (data.questionType === "OE") statusAnswer = "info"; //Nếu user Trả lời sai
-        if (data.questionType === "EQ") statusAnswer = "warning"; //Nếu user Trả lời sai
+        if (data.questionType === "EQ") {
+          statusAnswer = "warning";
+          this.markQuestion = {
+            ...this.markQuestion,
+            [data.answerId]: data.userScore
+          };
+        }
 
         return {
           ...data,
