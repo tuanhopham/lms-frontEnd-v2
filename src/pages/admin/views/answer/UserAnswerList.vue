@@ -21,7 +21,7 @@
         </el-table-column>
         <el-table-column prop="username" label="User name"> </el-table-column>
         <el-table-column prop="email" label="Email"> </el-table-column>
-        <el-table-column label="Role" width="100" align="center">
+        <el-table-column label="Role" width="110" align="center">
           <template slot-scope="scope">
             <el-tag
               :type="
@@ -90,9 +90,9 @@ export default {
       colors: [
         { color: "#f56c6c", percentage: 20 },
         { color: "#e6a23c", percentage: 40 },
-        { color: "#5cb87a", percentage: 60 },
+        { color: "#6f7ad3", percentage: 60 },
         { color: "#1989fa", percentage: 80 },
-        { color: "#6f7ad3", percentage: 100 }
+        { color: "#67C23A", percentage: 100 }
       ]
     };
   },

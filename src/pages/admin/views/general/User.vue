@@ -562,7 +562,10 @@ export default {
       this.currentChange(1);
     },
     "user.admin_type"() {
-      if (this.user.admin_type === "Super Admin") {
+      if (
+        this.user.admin_type === "Super Admin" ||
+        this.user.admin_type === "Interviewer"
+      ) {
         this.user.problem_permission = "All";
       } else if (this.user.admin_type === "Regular User") {
         this.user.problem_permission = "None";
