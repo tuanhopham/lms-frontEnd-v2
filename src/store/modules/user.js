@@ -20,6 +20,9 @@ const getters = {
     return getters.user.admin_type === USER_TYPE.ADMIN ||
       getters.user.admin_type === USER_TYPE.SUPER_ADMIN
   },
+  isInterviewer: (state, getters) => {
+    return getters.user.admin_type === USER_TYPE.INTERVIEWER
+  },
   isSuperAdmin: (state, getters) => {
     return getters.user.admin_type === USER_TYPE.SUPER_ADMIN
   },
@@ -29,7 +32,7 @@ const getters = {
 }
 
 const mutations = {
-  [types.CHANGE_PROFILE] (state, {profile}) {
+  [types.CHANGE_PROFILE](state, { profile }) {
     state.profile = profile
     if (profile.language) {
       i18n.locale = profile.language
@@ -39,14 +42,14 @@ const mutations = {
 }
 
 const actions = {
-  async getProfile ({commit}) {
+  async getProfile({ commit }) {
     await api.getUserInfo().then(res => {
       commit(types.CHANGE_PROFILE, {
         profile: res.data.data || {}
       })
     })
   },
-  clearProfile ({commit}) {
+  clearProfile({ commit }) {
     commit(types.CHANGE_PROFILE, {
       profile: {}
     })

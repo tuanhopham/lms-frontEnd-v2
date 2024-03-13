@@ -28,5 +28,9 @@ src/pages/oj/views/problem/*.vue
 src/pages/oj/views/rank/*.vue
 src/pages/oj/views/submission/*.vue
 src/pages/oj/views/user/*.vue
+src/pages/oj/components/*.vue
 src/pages/admin/views/*.vue
 src/pages/admin/views/answer/*.vue
+src/pages/admin/components/*.vue
+src/store/modules/*.js
+src/utils/*.js

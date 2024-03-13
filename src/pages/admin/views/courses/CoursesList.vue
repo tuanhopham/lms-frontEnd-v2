@@ -33,140 +33,144 @@
             placeholder="Tìm Kiếm"
           ></el-input>
         </el-col>
-        </el-row>
-      </div>
-      <el-divider></el-divider>
-      <el-form>
-        <el-table
-          v-loading="loading"
-          :data="coursesList.items"
-          element-loading-text="loading"
-          ref="table"
-          width="100%"
+      </el-row>
+    </div>
+    <el-divider></el-divider>
+    <el-form>
+      <el-table
+        v-loading="loading"
+        :data="coursesList.items"
+        element-loading-text="loading"
+        ref="table"
+        width="100%"
+      >
+        <el-table-column
+          prop="id"
+          align="center"
+          label="ID"
+          width="60"
+          sortable
         >
-          <el-table-column
-            prop="id"
-            align="center"
-            label="ID"
-            width="60"
-            sortable
-          >
-          </el-table-column>
-          <el-table-column
-            label="Avatar"
-            align="center"
-            width="160"
-            prop="avatar"
-          >
-            <template slot-scope="scope">
-              <el-avatar
-                class="avatar-img"
-                shape="square"
-                :size="100"
-                :fit="fit"
-                :src="scope.row.avatar"
-              ></el-avatar>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="title"
-            label="Title"
-            width="auto"
-          ></el-table-column>
-          <el-table-column align="center" label="Sourses" width="100">
-            <template slot-scope="scope">
-              <el-tag
-                :type="
-                  scope.row.sources === 'Ncc'
-                    ? 'danger'
-                    : scope.row.sources === 'Scorm'
-                    ? 'primary'
-                    : null
-                "
-                >{{ scope.row.sources }}</el-tag
-              >
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="Level" width="100">
-            <template slot-scope="scope">
-              <el-tag
-                :type="
-                  scope.row.level === 'Basic'
-                    ? 'success'
-                    : scope.row.level === 'Advance'
-                    ? 'warning'
-                    : scope.row.level === 'Expert'
-                    ? 'danger'
-                    : null
-                "
-                >{{ scope.row.level }}</el-tag
-              >
-            </template>
-          </el-table-column>
+        </el-table-column>
+        <el-table-column
+          label="Avatar"
+          align="center"
+          width="160"
+          prop="avatar"
+        >
+          <template slot-scope="scope">
+            <el-avatar
+              class="avatar-img"
+              shape="square"
+              :size="100"
+              :fit="fit"
+              :src="scope.row.avatar"
+            ></el-avatar>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="title"
+          label="Title"
+          width="auto"
+        ></el-table-column>
+        <el-table-column align="center" label="Sourses" width="100">
+          <template slot-scope="scope">
+            <el-tag
+              :type="
+                scope.row.sources === 'Ncc'
+                  ? 'danger'
+                  : scope.row.sources === 'Scorm'
+                  ? 'primary'
+                  : null
+              "
+              >{{ scope.row.sources }}</el-tag
+            >
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="Level" width="100">
+          <template slot-scope="scope">
+            <el-tag
+              :type="
+                scope.row.level === 'Basic'
+                  ? 'success'
+                  : scope.row.level === 'Advance'
+                  ? 'warning'
+                  : scope.row.level === 'Expert'
+                  ? 'danger'
+                  : null
+              "
+              >{{ scope.row.level }}</el-tag
+            >
+          </template>
+        </el-table-column>
 
-          <el-table-column align="center" label="Type" width="100">
-            <template slot-scope="scope">
-              <el-tag
-                :type="
-                  scope.row.type === 'Recur'
-                    ? 'info'
-                    : scope.row.type === 'Perpetual'
-                    ? ''
-                    : null
-                "
-                >{{ scope.row.type }}</el-tag
-              >
-            </template>
-          </el-table-column>
-          <el-table-column align="center" width="100" label="Visible">
-            <template slot-scope="scope">
-              <el-switch
-                v-model="scope.row.visible"
-                active-text=""
-                inactive-text=""
-                @change="handleVisibleSwitch(scope.row)"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column width="220" label="Operation">
-            <div slot-scope="scope">
-              <icon-btn
-                name="Edit"
-                icon="edit"
-                @click.native="goEdit(scope.row.id)"
-              ></icon-btn>
-           
-              <icon-btn name="User Answers" icon="users" @click.native="goUserAnswer(scope.row.id)" />
-              <icon-btn
-                name="Delete"
-                @click.native="goDelete(scope.row.id)"
-                icon="trash"
-              ></icon-btn>
-            </div>
-          </el-table-column>
-        </el-table>
-        <div class="SSbottom"  v-if="isSuperAdmin">
-          <el-button
-            type="primary"
-            icon="el-icon-plus"
-            @click.native="goCreate()"
-            size="small"
-            >Create</el-button
-          >
-          <el-pagination
-            class="pagnination"
-            layout="prev, pager, next"
-            @current-change="currentChange"
-            :page-count="coursesList.total_pages" hide-on-single-page
-          >
-          </el-pagination>
-        </div>
-      </el-form>
-    </el-card>
+        <el-table-column align="center" label="Type" width="100">
+          <template slot-scope="scope">
+            <el-tag
+              :type="
+                scope.row.type === 'Recur'
+                  ? 'info'
+                  : scope.row.type === 'Perpetual'
+                  ? ''
+                  : null
+              "
+              >{{ scope.row.type }}</el-tag
+            >
+          </template>
+        </el-table-column>
+        <el-table-column align="center" width="100" label="Visible">
+          <template slot-scope="scope">
+            <el-switch
+              v-model="scope.row.visible"
+              active-text=""
+              inactive-text=""
+              @change="handleVisibleSwitch(scope.row)"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column width="220" label="Operation">
+          <div slot-scope="scope">
+            <icon-btn
+              name="Edit"
+              icon="edit"
+              @click.native="goEdit(scope.row.id)"
+            ></icon-btn>
+            <icon-btn
+              name="User Answers"
+              icon="users"
+              @click.native="goUserAnswer(scope.row.id)"
+            />
+            <icon-btn
+              name="Delete"
+              @click.native="goDelete(scope.row.id)"
+              icon="trash"
+            ></icon-btn>
+          </div>
+        </el-table-column>
+      </el-table>
+      <div class="SSbottom" v-if="isSuperAdmin">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          @click.native="goCreate()"
+          size="small"
+          >Create</el-button
+        >
+        <el-pagination
+          class="pagnination"
+          layout="prev, pager, next"
+          @current-change="currentChange"
+          :page-count="coursesList.total_pages"
+          hide-on-single-page
+        >
+        </el-pagination>
+      </div>
+    </el-form>
+  </el-card>
 </template>
 <script>
 import api from "../../api";
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
   name: "CoursesList",
   data() {
@@ -214,16 +218,20 @@ export default {
       );
     },
     goEdit(coursesId) {
-      this.$router.push({ name: "edit-courses", params: { coursesId } }).catch(() => {});
+      this.$router
+        .push({ name: "edit-courses", params: { coursesId } })
+        .catch(() => {});
     },
     goCreate() {
       this.$router.push({ name: "create-courses" }).catch(() => {});
     },
     goUserAnswer(coursesId) {
-      this.$router.push({
-        name: "courses-users",
-        params: { coursesId }
-      }).catch(() => {});
+      this.$router
+        .push({
+          name: "courses-users",
+          params: { coursesId }
+        })
+        .catch(() => {});
     },
     handleVisibleSwitch(row) {
       api.editCourses(row);
@@ -246,8 +254,8 @@ export default {
       );
     }
   },
-    computed: {
-    ...mapGetters(['isSuperAdmin'])
+  computed: {
+    ...mapGetters(["isSuperAdmin", "isInterviewer"])
   },
   watch: {
     query() {

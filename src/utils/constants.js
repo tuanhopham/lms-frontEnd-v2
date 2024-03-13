@@ -104,6 +104,7 @@ export const CONTEST_TYPE = {
 
 export const USER_TYPE = {
   REGULAR_USER: 'Regular User',
+  INTERVIEWER: 'Interviewer',
   ADMIN: 'Admin',
   SUPER_ADMIN: 'Super Admin'
 }
@@ -120,7 +121,7 @@ export const STORAGE_KEY = {
   languages: 'languages'
 }
 
-export function buildProblemCodeKey (problemID, contestID = null) {
+export function buildProblemCodeKey(problemID, contestID = null) {
   if (contestID) {
     return `${STORAGE_KEY.PROBLEM_CODE}_${contestID}_${problemID}`
   }
